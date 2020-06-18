@@ -6,13 +6,13 @@
 #include <fstream>
 #include <cmath>
 
-#include "Node.h" //класс вершин
-#include "Link.h" //класс рёбер
+#include "Node.h" //РєР»Р°СЃСЃ РІРµСЂС€РёРЅ
+#include "Link.h" //РєР»Р°СЃСЃ СЂС‘Р±РµСЂ
 
 using namespace sf;
 using namespace std;
 
-bool MouseOnNode(CircleShape &param,RenderWindow &window) { //функция отслеживания нажатия на ноду
+bool MouseOnNode(CircleShape &param,RenderWindow &window) { //С„СѓРЅРєС†РёСЏ РѕС‚СЃР»РµР¶РёРІР°РЅРёСЏ РЅР°Р¶Р°С‚РёСЏ РЅР° РЅРѕРґСѓ
 	int mouseX = Mouse::getPosition(window).x;
 	int mouseY = Mouse::getPosition(window).y;
 
@@ -23,7 +23,7 @@ bool MouseOnNode(CircleShape &param,RenderWindow &window) { //функция отслеживан
 	}
 }
 
-int MOF(int _i,int _s,int *H,int *T,int*F,int M) { //max of flow - функция определения максимального потока данных
+int MOF(int _i,int _s,int *H,int *T,int*F,int M) { //max of flow - С„СѓРЅРєС†РёСЏ РѕРїСЂРµРґРµР»РµРЅРёСЏ РјР°РєСЃРёРјР°Р»СЊРЅРѕРіРѕ РїРѕС‚РѕРєР° РґР°РЅРЅС‹С…
 	
 	int tH = _i, tT = _s, tF = 0;
 
@@ -78,101 +78,101 @@ int MOF(int _i,int _s,int *H,int *T,int*F,int M) { //max of flow - функция опред
 }
 
 int main() {
-	/* -------------------- СЧИТЫВАЕМ ИЗ ФАЙЛА ДАННЫЕ О ГРАФЕ ------------------------*/
+	/* -------------------- РЎР§РРўР«Р’РђР•Рњ РР— Р¤РђР™Р›Рђ Р”РђРќРќР«Р• Рћ Р“Р РђР¤Р• ------------------------*/
 
-	int N; //число вершин
-	int M; //число рёбер
+	int N; //С‡РёСЃР»Рѕ РІРµСЂС€РёРЅ
+	int M; //С‡РёСЃР»Рѕ СЂС‘Р±РµСЂ
 
-	string info; //переменная информации о топологии на экране
+	string info; //РїРµСЂРµРјРµРЅРЅР°СЏ РёРЅС„РѕСЂРјР°С†РёРё Рѕ С‚РѕРїРѕР»РѕРіРёРё РЅР° СЌРєСЂР°РЅРµ
 
-	ifstream f; //входной поток для считывания данных из topology.txt
-	f.open("topology.txt"); //открываем поток
-	f >> N; //считываем число вершин
+	ifstream f; //РІС…РѕРґРЅРѕР№ РїРѕС‚РѕРє РґР»СЏ СЃС‡РёС‚С‹РІР°РЅРёСЏ РґР°РЅРЅС‹С… РёР· topology.txt
+	f.open("topology.txt"); //РѕС‚РєСЂС‹РІР°РµРј РїРѕС‚РѕРє
+	f >> N; //СЃС‡РёС‚С‹РІР°РµРј С‡РёСЃР»Рѕ РІРµСЂС€РёРЅ
 	info += to_string(N) + " nodes\n\n";  
 
-	Node* Nodes = new Node[N]; //создаём N вершин
+	Node* Nodes = new Node[N]; //СЃРѕР·РґР°С‘Рј N РІРµСЂС€РёРЅ
 
-	for (int i = 0; i < N; i++) { //забиваем вершины данными
-		Nodes[i].N = i + 1; //идентификатор вершины
-		f >> Nodes[i].x; //коорд-ы
-		f >> Nodes[i].y; //коорд-ы
+	for (int i = 0; i < N; i++) { //Р·Р°Р±РёРІР°РµРј РІРµСЂС€РёРЅС‹ РґР°РЅРЅС‹РјРё
+		Nodes[i].N = i + 1; //РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІРµСЂС€РёРЅС‹
+		f >> Nodes[i].x; //РєРѕРѕСЂРґ-С‹
+		f >> Nodes[i].y; //РєРѕРѕСЂРґ-С‹
 
 		info += "(" + to_string(Nodes[i].N) + ") [" + to_string(Nodes[i].x) + ";" + to_string(Nodes[i].y) + "]\n";
 	}
 
-	f >> M; //считываем число рёбер
+	f >> M; //СЃС‡РёС‚С‹РІР°РµРј С‡РёСЃР»Рѕ СЂС‘Р±РµСЂ
 	info += "\n" + to_string(M) + " links\n\n";
 
-	Link* Links = new Link[M]; //создаём M рёбер
+	Link* Links = new Link[M]; //СЃРѕР·РґР°С‘Рј M СЂС‘Р±РµСЂ
 
-	int A, B; //вспомогалка
-	int *H = new int[M]; //для алгоритма
+	int A, B; //РІСЃРїРѕРјРѕРіР°Р»РєР°
+	int *H = new int[M]; //РґР»СЏ Р°Р»РіРѕСЂРёС‚РјР°
 	int* T = new int[M];
 	int* F = new int[M];
 
-	for (int i = 0; i < M; i++) { //забиваем рёбра данными
-		Links[i].M = i + 1; //идентификатор ребра
+	for (int i = 0; i < M; i++) { //Р·Р°Р±РёРІР°РµРј СЂС‘Р±СЂР° РґР°РЅРЅС‹РјРё
+		Links[i].M = i + 1; //РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЂРµР±СЂР°
 
-		f >> A; //начало ребра
+		f >> A; //РЅР°С‡Р°Р»Рѕ СЂРµР±СЂР°
 		H[i] = A;
-		A--; //корректировка
+		A--; //РєРѕСЂСЂРµРєС‚РёСЂРѕРІРєР°
 		Links[i].A = Nodes[A];
 
-		f >> B; //конец ребра
+		f >> B; //РєРѕРЅРµС† СЂРµР±СЂР°
 		T[i] = B;
-		B--; //корректировка
+		B--; //РєРѕСЂСЂРµРєС‚РёСЂРѕРІРєР°
 		Links[i].B = Nodes[B];
 
-		f >> Links[i].F; //пропускная способность ребра
+		f >> Links[i].F; //РїСЂРѕРїСѓСЃРєРЅР°СЏ СЃРїРѕСЃРѕР±РЅРѕСЃС‚СЊ СЂРµР±СЂР°
 		F[i] = Links[i].F;
 
 		info += "(" + to_string(Links[i].M) + ") [" + to_string(Nodes[A].N) + ";" + to_string(Nodes[B].N) + "] = " + to_string(Links[i].F) + "\n";
 	}
 
-	f.close(); //закрываем поток данных
+	f.close(); //Р·Р°РєСЂС‹РІР°РµРј РїРѕС‚РѕРє РґР°РЅРЅС‹С…
 
-	/* -------------------- ОТРИСОВЫВАЕМ ТЕКСТОВОЕ ПОЛЕ ------------------------*/
+	/* -------------------- РћРўР РРЎРћР’Р«Р’РђР•Рњ РўР•РљРЎРўРћР’РћР• РџРћР›Р• ------------------------*/
 
-	Font font; //переменная шрифта
-	font.loadFromFile("arial.ttf"); //подгружаем шрифт из ресурсов
+	Font font; //РїРµСЂРµРјРµРЅРЅР°СЏ С€СЂРёС„С‚Р°
+	font.loadFromFile("arial.ttf"); //РїРѕРґРіСЂСѓР¶Р°РµРј С€СЂРёС„С‚ РёР· СЂРµСЃСѓСЂСЃРѕРІ
 
-	Text infoText; //информация о топологии на экране
-	infoText.setCharacterSize(12); //размер шрифта
-	infoText.setFillColor(Color::White); //белый цвет текста
-	infoText.setFont(font); //применяем подгруженный шрифт
-	infoText.setPosition(20,20); //позиционируем объект на сцене
-	infoText.setString(info); //задаём начальный текст
+	Text infoText; //РёРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РѕРїРѕР»РѕРіРёРё РЅР° СЌРєСЂР°РЅРµ
+	infoText.setCharacterSize(12); //СЂР°Р·РјРµСЂ С€СЂРёС„С‚Р°
+	infoText.setFillColor(Color::White); //Р±РµР»С‹Р№ С†РІРµС‚ С‚РµРєСЃС‚Р°
+	infoText.setFont(font); //РїСЂРёРјРµРЅСЏРµРј РїРѕРґРіСЂСѓР¶РµРЅРЅС‹Р№ С€СЂРёС„С‚
+	infoText.setPosition(20,20); //РїРѕР·РёС†РёРѕРЅРёСЂСѓРµРј РѕР±СЉРµРєС‚ РЅР° СЃС†РµРЅРµ
+	infoText.setString(info); //Р·Р°РґР°С‘Рј РЅР°С‡Р°Р»СЊРЅС‹Р№ С‚РµРєСЃС‚
 
-	Text istok; //информация об истоке
+	Text istok; //РёРЅС„РѕСЂРјР°С†РёСЏ РѕР± РёСЃС‚РѕРєРµ
 	istok.setCharacterSize(12);
 	istok.setFillColor(Color::White);
 	istok.setFont(font);
 	istok.setPosition(190, 20);
 	istok.setString("istok: ");
 
-	Text stok; //информация о стоке
+	Text stok; //РёРЅС„РѕСЂРјР°С†РёСЏ Рѕ СЃС‚РѕРєРµ
 	stok.setCharacterSize(12);
 	stok.setFillColor(Color::White);
 	stok.setFont(font);
 	stok.setPosition(190, 40);
 	stok.setString("stok: ");
 
-	Text answer;  //информация о максимальном потоке данных
+	Text answer;  //РёРЅС„РѕСЂРјР°С†РёСЏ Рѕ РјР°РєСЃРёРјР°Р»СЊРЅРѕРј РїРѕС‚РѕРєРµ РґР°РЅРЅС‹С…
 	answer.setCharacterSize(12);
 	answer.setFillColor(Color::White);
 	answer.setFont(font);
 	answer.setPosition(190, 60);
 	answer.setString("Max flow: ");
 
-	/* -------------------- ОТРИСОВЫВАЕМ УЗЛЫ ТОПОЛОГИИ ------------------------*/
+	/* -------------------- РћРўР РРЎРћР’Р«Р’РђР•Рњ РЈР—Р›Р« РўРћРџРћР›РћР“РР ------------------------*/
 
-	Nodes->GraphicNodes = new CircleShape[N]; //круг вершины
-	Text* TextNodes = new Text[N]; //номера вершин
+	Nodes->GraphicNodes = new CircleShape[N]; //РєСЂСѓРі РІРµСЂС€РёРЅС‹
+	Text* TextNodes = new Text[N]; //РЅРѕРјРµСЂР° РІРµСЂС€РёРЅ
 
-	for (int i = 0; i < N; i++) { //перебираем вершины
-		Nodes->GraphicNodes[i].setFillColor(Color::Red); //задаём цвет вершины
-		Nodes->GraphicNodes[i].setRadius(8); //задаём радиус вершины
-		Nodes->GraphicNodes[i].setPosition((Nodes[i].x * 12) + 500, (Nodes[i].y * 12)+ 150); //позиционирование вершины
+	for (int i = 0; i < N; i++) { //РїРµСЂРµР±РёСЂР°РµРј РІРµСЂС€РёРЅС‹
+		Nodes->GraphicNodes[i].setFillColor(Color::Red); //Р·Р°РґР°С‘Рј С†РІРµС‚ РІРµСЂС€РёРЅС‹
+		Nodes->GraphicNodes[i].setRadius(8); //Р·Р°РґР°С‘Рј СЂР°РґРёСѓСЃ РІРµСЂС€РёРЅС‹
+		Nodes->GraphicNodes[i].setPosition((Nodes[i].x * 12) + 500, (Nodes[i].y * 12)+ 150); //РїРѕР·РёС†РёРѕРЅРёСЂРѕРІР°РЅРёРµ РІРµСЂС€РёРЅС‹
 
 		TextNodes[i].setCharacterSize(10);
 		TextNodes[i].setFillColor(Color::White);
@@ -181,20 +181,20 @@ int main() {
 		TextNodes[i].setString(to_string(i+1));
 	}
 
-	/* -------------------- ОТРИСОВЫВАЕМ РЁБРА ТОПОЛОГИИ ------------------------*/
+	/* -------------------- РћРўР РРЎРћР’Р«Р’РђР•Рњ Р РЃР‘Р Рђ РўРћРџРћР›РћР“РР ------------------------*/
 
-	RectangleShape* GraphicLinks = new RectangleShape[M]; //прямоугольник для отрисовки ребра
+	RectangleShape* GraphicLinks = new RectangleShape[M]; //РїСЂСЏРјРѕСѓРіРѕР»СЊРЅРёРє РґР»СЏ РѕС‚СЂРёСЃРѕРІРєРё СЂРµР±СЂР°
 	
-	for (int i = 0; i < M; i++) { //перебираем рёбра
+	for (int i = 0; i < M; i++) { //РїРµСЂРµР±РёСЂР°РµРј СЂС‘Р±СЂР°
 		GraphicLinks[i].setFillColor(Color::White);
-		float width = sqrtf(powf(Links[i].B.x - Links[i].A.x,2)+ powf(Links[i].B.y - Links[i].A.y, 2)) * 12; //вычисляем гипотенузу
-		GraphicLinks[i].setSize(Vector2f(width-20, 4)); //задаём длину
-		float katet = sqrtf(powf(Links[i].B.x - Links[i].A.x, 2) + powf(Links[i].A.y - Links[i].A.y, 2)) * 12; //длина катета
+		float width = sqrtf(powf(Links[i].B.x - Links[i].A.x,2)+ powf(Links[i].B.y - Links[i].A.y, 2)) * 12; //РІС‹С‡РёСЃР»СЏРµРј РіРёРїРѕС‚РµРЅСѓР·Сѓ
+		GraphicLinks[i].setSize(Vector2f(width-20, 4)); //Р·Р°РґР°С‘Рј РґР»РёРЅСѓ
+		float katet = sqrtf(powf(Links[i].B.x - Links[i].A.x, 2) + powf(Links[i].A.y - Links[i].A.y, 2)) * 12; //РґР»РёРЅР° РєР°С‚РµС‚Р°
 		float angle;
-		if ((Links[i].B.x >= Links[i].A.x) && (Links[i].B.y >= Links[i].A.y)) { //4 координатные четверти
-			angle = acosf(katet / width) * 180 / 3.14; //вычисляем угол
-			GraphicLinks[i].rotate(angle); //задаём угол
-			GraphicLinks[i].setPosition((Links[i].A.x * 12) + 510, (Links[i].A.y * 12) + 160); //позиционируем
+		if ((Links[i].B.x >= Links[i].A.x) && (Links[i].B.y >= Links[i].A.y)) { //4 РєРѕРѕСЂРґРёРЅР°С‚РЅС‹Рµ С‡РµС‚РІРµСЂС‚Рё
+			angle = acosf(katet / width) * 180 / 3.14; //РІС‹С‡РёСЃР»СЏРµРј СѓРіРѕР»
+			GraphicLinks[i].rotate(angle); //Р·Р°РґР°С‘Рј СѓРіРѕР»
+			GraphicLinks[i].setPosition((Links[i].A.x * 12) + 510, (Links[i].A.y * 12) + 160); //РїРѕР·РёС†РёРѕРЅРёСЂСѓРµРј
 		} else if ((Links[i].B.x <= Links[i].A.x) && (Links[i].B.y >= Links[i].A.y)) {
 			angle = 180 - acosf(katet / width) * 180 / 3.14;
 			GraphicLinks[i].rotate(angle);
@@ -210,40 +210,40 @@ int main() {
 		}
 	}
 
-	/* -------------------- ОТРИСОВЫВАЕМ ПОЛНОГО ОКНА ------------------------*/
+	/* -------------------- РћРўР РРЎРћР’Р«Р’РђР•Рњ РџРћР›РќРћР“Рћ РћРљРќРђ ------------------------*/
 
-	RenderWindow window(VideoMode(900, 450), "MWS", Style::Titlebar); //переменная окна, задаём размер и название окна
-	int clicks = 0; //для выбора истока и стока
-	int I_istok, I_stok; //текущий исток и сток
+	RenderWindow window(VideoMode(900, 450), "MWS", Style::Titlebar); //РїРµСЂРµРјРµРЅРЅР°СЏ РѕРєРЅР°, Р·Р°РґР°С‘Рј СЂР°Р·РјРµСЂ Рё РЅР°Р·РІР°РЅРёРµ РѕРєРЅР°
+	int clicks = 0; //РґР»СЏ РІС‹Р±РѕСЂР° РёСЃС‚РѕРєР° Рё СЃС‚РѕРєР°
+	int I_istok, I_stok; //С‚РµРєСѓС‰РёР№ РёСЃС‚РѕРє Рё СЃС‚РѕРє
 
-	while (window.isOpen()) { //пока окно открыта
+	while (window.isOpen()) { //РїРѕРєР° РѕРєРЅРѕ РѕС‚РєСЂС‹С‚Р°
 
 		Event event;
 		while (window.pollEvent(event)) {
 			if (event.type == Event::Closed)
 				window.close();
-			if (Keyboard::isKeyPressed(Keyboard::Escape)) {  //закрываем окно по Esc
+			if (Keyboard::isKeyPressed(Keyboard::Escape)) {  //Р·Р°РєСЂС‹РІР°РµРј РѕРєРЅРѕ РїРѕ Esc
 				window.close();
 			}
-			if (event.type == event.MouseButtonReleased && event.mouseButton.button == Mouse::Left) { //проверяем нажатие на вершину
-				Node* clicableNode = NULL; //временная переменная
+			if (event.type == event.MouseButtonReleased && event.mouseButton.button == Mouse::Left) { //РїСЂРѕРІРµСЂСЏРµРј РЅР°Р¶Р°С‚РёРµ РЅР° РІРµСЂС€РёРЅСѓ
+				Node* clicableNode = NULL; //РІСЂРµРјРµРЅРЅР°СЏ РїРµСЂРµРјРµРЅРЅР°СЏ
 				for (int i = 0; i < N; ++i) {
 					if (MouseOnNode(Nodes->GraphicNodes[i], window) && Nodes->GraphicNodes[i].getFillColor() == Color::Red) {
 						Nodes->GraphicNodes[i].setFillColor(Color::Blue);
 						clicableNode = &Nodes[i];
 						if (clicks == 0) {
-							istok.setString("istok: " + to_string(clicableNode->N)); //вбиваем исток
+							istok.setString("istok: " + to_string(clicableNode->N)); //РІР±РёРІР°РµРј РёСЃС‚РѕРє
 							I_istok = clicableNode->N;
 						}else if (clicks == 1) {
-							stok.setString("stok: " + to_string(clicableNode->N)); //вбиваем сток
+							stok.setString("stok: " + to_string(clicableNode->N)); //РІР±РёРІР°РµРј СЃС‚РѕРє
 							I_stok = clicableNode->N;
 							clicks = -1;
 
-							string s = "Max flow: " + to_string(MOF(I_istok,I_stok,H,T,F,M)); //вычисляем пропускную способность потока
+							string s = "Max flow: " + to_string(MOF(I_istok,I_stok,H,T,F,M)); //РІС‹С‡РёСЃР»СЏРµРј РїСЂРѕРїСѓСЃРєРЅСѓСЋ СЃРїРѕСЃРѕР±РЅРѕСЃС‚СЊ РїРѕС‚РѕРєР°
 							answer.setString(s);
 						}
 						++clicks;
-					} else if(MouseOnNode(Nodes->GraphicNodes[i], window) && Nodes->GraphicNodes[i].getFillColor() == Color::Blue){ //повторное нажатие на активную вершину
+					} else if(MouseOnNode(Nodes->GraphicNodes[i], window) && Nodes->GraphicNodes[i].getFillColor() == Color::Blue){ //РїРѕРІС‚РѕСЂРЅРѕРµ РЅР°Р¶Р°С‚РёРµ РЅР° Р°РєС‚РёРІРЅСѓСЋ РІРµСЂС€РёРЅСѓ
 						Nodes->GraphicNodes[i].setFillColor(Color::Red);
 						istok.setString("istok: " + to_string(0));
 						stok.setString("stok: " + to_string(0));
@@ -254,20 +254,20 @@ int main() {
 				}
 			}
 		}
-		//отрисовываем всё
+		//РѕС‚СЂРёСЃРѕРІС‹РІР°РµРј РІСЃС‘
 
-		window.clear(); //очищаем экран
+		window.clear(); //РѕС‡РёС‰Р°РµРј СЌРєСЂР°РЅ
 
-		for (int i = 0; i < M; i++) { //отрисовываем линки
+		for (int i = 0; i < M; i++) { //РѕС‚СЂРёСЃРѕРІС‹РІР°РµРј Р»РёРЅРєРё
 			window.draw(GraphicLinks[i]);
 		}
 
-		for (int i = 0; i < N; i++) { //отрисовываем ноды
+		for (int i = 0; i < N; i++) { //РѕС‚СЂРёСЃРѕРІС‹РІР°РµРј РЅРѕРґС‹
 			window.draw(Nodes->GraphicNodes[i]);
 			window.draw(TextNodes[i]);
 		}
 
-		window.draw(istok); //отрисовываем текст
+		window.draw(istok); //РѕС‚СЂРёСЃРѕРІС‹РІР°РµРј С‚РµРєСЃС‚
 		window.draw(stok);
 		window.draw(infoText);
 		window.draw(answer);
@@ -275,7 +275,7 @@ int main() {
 		window.display();
 	}
 
-	delete Nodes; //освобождаем динамически выделенную память
+	delete Nodes; //РѕСЃРІРѕР±РѕР¶РґР°РµРј РґРёРЅР°РјРёС‡РµСЃРєРё РІС‹РґРµР»РµРЅРЅСѓСЋ РїР°РјСЏС‚СЊ
 	delete Links;
 
 	return 0;
