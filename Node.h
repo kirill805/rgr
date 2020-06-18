@@ -3,10 +3,10 @@
 using namespace sf;
 using namespace std;
 
-class Node { //вершина топологии
+class Node { //РІРµСЂС€РёРЅР° С‚РѕРїРѕР»РѕРіРёРё
 public:
-	int N; //идентификатор вершины
-	int x, y; //координаты вершины
+	int N; //РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РІРµСЂС€РёРЅС‹
+	int x, y; //РєРѕРѕСЂРґРёРЅР°С‚С‹ РІРµСЂС€РёРЅС‹
 	CircleShape* GraphicNodes;
 
 };
